@@ -32,7 +32,7 @@
 
             <!-- Result Section -->
             <div id="result" class="mt-6 hidden">
-                <!-- JavaScript দিয়ে এখানে ডাউনলোড লিংক বা ভিডিও প্রিভিউ আসবে -->
+                <!-- JavaScript দিয়ে এখানে ডাউনলোড অপশন আসবে -->
             </div>
         </div>
     </main>
@@ -59,22 +59,24 @@
             resultDiv.classList.add('hidden');
 
             try {
-                // আমরা এখানে একটি ফ্রি থার্ড-পার্টি API ব্যবহার করতে পারি (যেমন RapidAPI বা TikWM API)
-                // উদাহরণস্বরূপ TikWM ফ্রি API ব্যবহার করা হলো:
                 const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
                 const data = await response.json();
 
                 if (data.code === 0) {
                     const videoUrl = data.data.play; // ওয়াটারমার্ক ছাড়া ভিডিও লিংক
                     const coverUrl = data.data.cover; // থাম্বনেইল
+                    const title = data.data.title || 'tiktok_video';
 
                     resultDiv.innerHTML = `
                         <div class="border border-gray-700 rounded-lg p-4 bg-gray-700/50 flex flex-col items-center space-y-4">
-                            <img src="${coverUrl}" alt="Thumbnail" class="w-32 h-32 object-cover rounded-md">
-                            <a href="${videoUrl}" target="_blank" download="tiktok_video.mp4"
-                                class="w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition">
-                                সার্ভার থেকে ডাউনলোড করুন (No Watermark)
-                            </a>
+                            <img src="${coverUrl}" alt="Thumbnail" class="w-28 h-28 object-cover rounded-md shadow">
+                            <p class="text-sm text-gray-300 text-center line-clamp-2">${title}</p>
+                            
+                            <!-- সরাসরি ডাউনলোড ট্রিগার করার জন্য ফাংশন কল -->
+                            <button onclick="triggerDownload('${videoUrl}', '${title}.mp4')"
+                                class="w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition shadow-lg flex items-center justify-center space-y-0">
+                                📥 সরাসরি ডাউনলোড করুন (No Watermark)
+                            </button>
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
@@ -87,6 +89,30 @@
             } finally {
                 btn.innerText = 'ডাউনলোড করুন';
                 btn.disabled = false;
+            }
+        }
+
+        // ব্রাউজারে ফাইল ডাউনলোড ফোর্চ করার ফাংশন
+        async function triggerDownload(fileUrl, filename) {
+            try {
+                // ভিডিও ফাইলে ফেচ করে ব্লব (Blob) ডাটা তৈরি করা, যাতে সরাসরি ফোনে ডাউনলোড শুরু হয়
+                const response = await fetch(fileUrl);
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = filename;
+                
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+            } catch (err) {
+                // কোনো কারণে ব্লক করলে সরাসরি লিংকে রিডাইরেক্ট করবে
+                window.open(fileUrl, '_blank');
             }
         }
     </script>
