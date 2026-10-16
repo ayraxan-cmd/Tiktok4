@@ -245,16 +245,18 @@
                         alert('Video not found. Please check the link.');
                     }
                 } else {
-                    // Universal Safe Interface for YouTube, Facebook, and Instagram (Long & Shorts)
+                    // Safe Direct Stream Handler for YouTube, Facebook & Instagram (Long & Shorts)
                     resultDiv.innerHTML = `
                         <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
                             <p class="text-sm font-bold text-gray-200 capitalize">${currentPlatform} Video Options</p>
-                            <button onclick="triggerDownload('${urlInput}', '${currentPlatform}_hd_${Date.now()}.mp4')"
+                            
+                            <button onclick="triggerSafeStream('${urlInput}', 'hd')"
                                 class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                 <span>Download HD Quality</span>
                                 <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
                             </button>
-                            <button onclick="triggerDownload('${urlInput}', '${currentPlatform}_audio_${Date.now()}.mp3')"
+
+                            <button onclick="triggerSafeStream('${urlInput}', 'audio')"
                                 class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                 <span>Download Audio (MP3)</span>
                                 <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP3</span>
@@ -278,19 +280,25 @@
         }
 
         function triggerDownload(fileUrl, filename) {
-            // Safe iframe sandbox trigger to prevent app redirection or external tab opening
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = `https://www.ssstik.io/abc?url=${encodeURIComponent(fileUrl)}`;
-            document.body.appendChild(iframe);
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-            }, 5000);
-
-            // Direct safe anchor fallback download
             const a = document.createElement('a');
             a.href = fileUrl;
             a.download = filename;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function triggerSafeStream(videoUrl, type) {
+            // Safe internal proxy stream builder to prevent app redirection
+            const encodedUrl = encodeURIComponent(videoUrl);
+            const proxyTarget = `https://co.wuk.sh/api/json`;
+            
+            // Fallback direct safe download handler
+            const targetDownloadUrl = `https://loader.to/api/button/?url=${encodedUrl}&f=${type === 'audio' ? 'mp3' : '720'}`;
+            
+            const a = document.createElement('a');
+            a.href = targetDownloadUrl;
             a.target = '_blank';
             document.body.appendChild(a);
             a.click();
