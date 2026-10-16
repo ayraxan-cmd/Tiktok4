@@ -129,9 +129,8 @@
                 const data = await response.json();
 
                 if (data.code === 0) {
-                    const videoNoWm = data.data.play;     // ওয়াটারমার্ক ছাড়া ভিডিও
-                    const videoWm = data.data.wmplay;     // ওয়াটারমার্ক সহ ভিডিও
-                    const coverUrl = data.data.cover;     // থাম্বনেইল
+                    const videoNoWm = data.data.play;     
+                    const coverUrl = data.data.cover;     
                     const title = data.data.title || 'TikTok Video';
                     const author = data.data.author?.nickname || 'Creator';
 
@@ -145,21 +144,12 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                                <!-- HD No Watermark Button -->
-                                <a href="${videoNoWm}" target="_blank" rel="noopener noreferrer"
-                                    class="flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md shadow-emerald-900/30 text-sm">
-                                    <i class="fa-solid fa-download"></i>
-                                    <span>HD (No Watermark)</span>
-                                </a>
-
-                                <!-- Watermark Version Button -->
-                                <a href="${videoWm}" target="_blank" rel="noopener noreferrer"
-                                    class="flex items-center justify-center space-x-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold py-3 px-4 rounded-xl transition border border-gray-700 text-sm">
-                                    <i class="fa-solid fa-video"></i>
-                                    <span>With Watermark</span>
-                                </a>
-                            </div>
+                            <!-- সরাসরি ডাউনলোড বাটন -->
+                            <button onclick="forceDownload('${videoNoWm}', 'tiktok_${Date.now()}.mp4')"
+                                class="flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md shadow-emerald-900/30 text-sm w-full">
+                                <i class="fa-solid fa-download"></i>
+                                <span>সরাসরি ডাউনলোড করুন (HD No Watermark)</span>
+                            </button>
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
@@ -173,6 +163,17 @@
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
+        }
+
+        // ফোরসফুল ডাউনলোড মেথড
+        function forceDownload(videoUrl, filename) {
+            const a = document.createElement('a');
+            a.href = videoUrl;
+            a.download = filename;
+            a.setAttribute('target', '_blank');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     </script>
 </body>
