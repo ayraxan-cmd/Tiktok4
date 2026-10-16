@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-in-One Video Downloader</title>
+    <title> JEBA ALL Video Downloader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -104,9 +104,9 @@
 
         const platforms = [
             { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok text-pink-500', placeholder: 'Insert TikTok link here' },
-            { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube text-red-500', placeholder: 'Insert YouTube link here (Long or Shorts)' },
-            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here (Video or Reel)' },
-            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here (Reel or Post)' }
+            { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube text-red-500', placeholder: 'Insert YouTube link here' },
+            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here' },
+            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here' }
         ];
 
         function renderBottomApps() {
@@ -220,23 +220,23 @@
                                 </div>
 
                                 <div class="flex flex-col space-y-2.5">
-                                    <button onclick="directDownload('${videoHd}', 'tiktok_hd_${Date.now()}.mp4')"
+                                    <a href="${videoHd}" target="_blank" download="tiktok_hd.mp4"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Without watermark HD</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
-                                    </button>
+                                    </a>
 
-                                    <button onclick="directDownload('${videoNoWm}', 'tiktok_${Date.now()}.mp4')"
+                                    <a href="${videoNoWm}" target="_blank" download="tiktok.mp4"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Without watermark</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Normal</span>
-                                    </button>
+                                    </a>
 
-                                    <button onclick="directDownload('${musicUrl}', 'tiktok_audio_${Date.now()}.mp3')"
+                                    <a href="${musicUrl}" target="_blank" download="tiktok_audio.mp3"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Download MP3</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Audio</span>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         `;
@@ -245,22 +245,22 @@
                         alert('Video not found. Please check the link.');
                     }
                 } else {
-                    // Direct Stream Options for YouTube, Facebook & Instagram without ads/redirects
+                    // Simple & clean direct link builder for YouTube, Facebook & Instagram without third-party ad loaders
                     resultDiv.innerHTML = `
                         <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
                             <p class="text-sm font-bold text-gray-200 capitalize">${currentPlatform} Video Options</p>
                             
-                            <button onclick="directDownload('${urlInput}', '${currentPlatform}_hd_${Date.now()}.mp4')"
+                            <a href="${urlInput}" target="_blank" download="${currentPlatform}_video.mp4"
                                 class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                <span>Download HD Quality</span>
+                                <span>Download Video File</span>
                                 <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
-                            </button>
+                            </a>
 
-                            <button onclick="directDownload('${urlInput}', '${currentPlatform}_audio_${Date.now()}.mp3')"
+                            <a href="${urlInput}" target="_blank" download="${currentPlatform}_audio.mp3"
                                 class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                 <span>Download Audio (MP3)</span>
                                 <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP3</span>
-                            </button>
+                            </a>
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
@@ -277,17 +277,6 @@
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
-        }
-
-        function directDownload(fileUrl, filename) {
-            // Pure direct inline download trigger without ads or external landing pages
-            const a = document.createElement('a');
-            a.href = fileUrl;
-            a.download = filename;
-            a.setAttribute('target', '_self');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
 
         renderBottomApps();
