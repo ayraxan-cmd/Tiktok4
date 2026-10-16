@@ -1,61 +1,127 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Video Downloader - No Watermark</title>
+    <title>TikSnap Pro - Ultimate TikTok Video Downloader</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: '#111827',
+                        accentRed: '#ff3b5c',
+                        accentHover: '#e03250'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col justify-between">
+<body class="bg-darkBg text-white min-h-screen flex flex-col justify-between font-sans selection:bg-accentRed selection:text-white">
 
-    <!-- Header -->
-    <header class="py-6 text-center">
-        <h1 class="text-3xl font-bold text-red-500">TikTok Downloader</h1>
-        <p class="text-gray-400 text-sm mt-1">ওয়াটারমার্ক ছাড়া টিকটক ভিডিও ডাউনলোড করুন একদম ফ্রিতে!</p>
+    <!-- Header / Navbar -->
+    <header class="py-5 px-6 border-b border-gray-800/60 backdrop-blur-md bg-darkBg/80 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-gradient-to-tr from-accentRed to-orange-500 p-2.5 rounded-xl shadow-lg shadow-accentRed/30">
+                    <i class="fa-solid fa-video text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-black tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">TikSnap<span class="text-accentRed">.Pro</span></span>
+            </div>
+            <span class="text-xs bg-accentRed/10 text-accentRed border border-accentRed/20 px-3 py-1 rounded-full font-semibold">No Watermark</span>
+        </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow flex items-center justify-center px-4">
-        <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-lg">
-            <div class="space-y-4">
-                <div>
-                    <label for="url" class="block text-sm font-medium text-gray-300 mb-2">টিকটক ভিডিওর লিংক দিন:</label>
-                    <input type="text" id="url" placeholder="https://www.tiktok.com/@username/video/..." 
-                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-red-500 text-white placeholder-gray-400">
-                </div>
-                <button onclick="downloadVideo()" id="downloadBtn"
-                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition duration-200">
-                    ডাউনলোড করুন
-                </button>
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-xl">
+            <!-- Hero Section -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">টিকটক ভিডিও ডাউনলোড করুন</h1>
+                <p class="text-gray-400 text-sm sm:text-base">ওয়াটারমার্ক ছাড়া এইচডি (HD) কোয়ালিটিতে টিকটক ভিডিও সেভ করুন খুব সহজেই।</p>
             </div>
 
-            <!-- Result Section -->
-            <div id="result" class="mt-6 hidden">
-                <!-- JavaScript দিয়ে এখানে ডাউনলোড অপশন আসবে -->
+            <!-- Input Card -->
+            <div class="bg-cardBg border border-gray-800 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 backdrop-blur-xl">
+                <div class="space-y-4">
+                    <label for="url" class="block text-sm font-medium text-gray-300">টিকটক ভিডিওর লিংক পেস্ট করুন:</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-4 text-gray-500">
+                            <i class="fa-solid fa-link"></i>
+                        </span>
+                        <input type="text" id="url" placeholder="https://v.tiktok.com/... অথবা ভিডিওর লিংক" 
+                            class="w-full pl-11 pr-28 py-4 bg-gray-900/80 border border-gray-700/80 rounded-2xl focus:outline-none focus:border-accentRed focus:ring-2 focus:ring-accentRed/20 text-white placeholder-gray-500 text-sm transition-all">
+                        
+                        <!-- Paste Button Inside Input -->
+                        <button onclick="pasteLink()" type="button" 
+                            class="absolute right-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 border border-gray-700">
+                            <i class="fa-solid fa-paste"></i>
+                            <span>পেস্ট</span>
+                        </button>
+                    </div>
+
+                    <button onclick="downloadVideo()" id="downloadBtn"
+                        class="w-full bg-gradient-to-r from-accentRed to-rose-600 hover:from-accentHover hover:to-rose-700 text-white font-bold py-4 rounded-2xl transition duration-300 shadow-lg shadow-accentRed/30 flex items-center justify-center space-x-2 text-base active:scale-[0.99]">
+                        <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+                        <span>ভিডিও প্রসেস করুন</span>
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loader" class="hidden mt-8 text-center space-y-3">
+                    <div class="inline-block w-8 h-8 border-4 border-accentRed border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-sm text-gray-400">ভিডিও ফেচ করা হচ্ছে, দয়া করে অপেক্ষা করুন...</p>
+                </div>
+
+                <!-- Result Section -->
+                <div id="result" class="mt-8 hidden animate-fade-in">
+                    <!-- JavaScript দিয়ে এখানে প্রিভিউ ও ডাউনলোড অপশন আসবে -->
+                </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="py-4 text-center text-gray-500 text-sm">
-        &copy; 2026 TikTok Downloader. All rights reserved.
+    <footer class="py-6 text-center border-t border-gray-800/60 text-gray-500 text-xs">
+        &copy; 2026 TikSnap Pro. All rights reserved. Designed for fast downloads.
     </footer>
 
-    <!-- JavaScript logic -->
+    <!-- JavaScript Logic -->
     <script>
+        // এক ক্লিকে ক্লিপবোর্ড থেকে লিংক পেস্ট করার ফাংশন
+        async function pasteLink() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById('url').value = text;
+                } else {
+                    alert('ক্লিপবোর্ড খালি!');
+                }
+            } catch (err) {
+                alert('ব্রাউজার থেকে ক্লিপবোর্ড এক্সেস অনুমতি দেওয়া নেই। সরাসরি পেস্ট (Paste) করুন।');
+            }
+        }
+
         async function downloadVideo() {
             const urlInput = document.getElementById('url').value.trim();
             const resultDiv = document.getElementById('result');
+            const loader = document.getElementById('loader');
             const btn = document.getElementById('downloadBtn');
 
             if (!urlInput) {
-                alert('দয়া করে একটি সঠিক টিকটক লিংক দিন।');
+                alert('দয়া করে প্রথমে একটি টিকটক লিংক দিন।');
                 return;
             }
 
-            btn.innerText = 'লোড হচ্ছে...';
             btn.disabled = true;
+            loader.classList.remove('hidden');
             resultDiv.classList.add('hidden');
 
             try {
@@ -63,56 +129,49 @@
                 const data = await response.json();
 
                 if (data.code === 0) {
-                    const videoUrl = data.data.play; // ওয়াটারমার্ক ছাড়া ভিডিও লিংক
-                    const coverUrl = data.data.cover; // থাম্বনেইল
-                    const title = data.data.title || 'tiktok_video';
+                    const videoNoWm = data.data.play;     // ওয়াটারমার্ক ছাড়া ভিডিও
+                    const videoWm = data.data.wmplay;     // ওয়াটারমার্ক সহ ভিডিও
+                    const coverUrl = data.data.cover;     // থাম্বনেইল
+                    const title = data.data.title || 'TikTok Video';
+                    const author = data.data.author?.nickname || 'Creator';
 
                     resultDiv.innerHTML = `
-                        <div class="border border-gray-700 rounded-lg p-4 bg-gray-700/50 flex flex-col items-center space-y-4">
-                            <img src="${coverUrl}" alt="Thumbnail" class="w-28 h-28 object-cover rounded-md shadow">
-                            <p class="text-sm text-gray-300 text-center line-clamp-2">${title}</p>
-                            
-                            <!-- সরাসরি ডাউনলোড ট্রিগার করার জন্য ফাংশন কল -->
-                            <button onclick="triggerDownload('${videoUrl}', '${title}.mp4')"
-                                class="w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition shadow-lg flex items-center justify-center space-y-0">
-                                📥 সরাসরি ডাউনলোড করুন (No Watermark)
-                            </button>
+                        <div class="border border-gray-800 rounded-2xl p-5 bg-gray-900/90 shadow-inner flex flex-col space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <img src="${coverUrl}" alt="Thumbnail" class="w-20 h-20 object-cover rounded-xl border border-gray-700 shadow">
+                                <div class="overflow-hidden">
+                                    <h3 class="text-sm font-bold text-white truncate">${author}</h3>
+                                    <p class="text-xs text-gray-400 line-clamp-2 mt-1">${title}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                                <!-- HD No Watermark Button -->
+                                <a href="${videoNoWm}" target="_blank" rel="noopener noreferrer"
+                                    class="flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md shadow-emerald-900/30 text-sm">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span>HD (No Watermark)</span>
+                                </a>
+
+                                <!-- Watermark Version Button -->
+                                <a href="${videoWm}" target="_blank" rel="noopener noreferrer"
+                                    class="flex items-center justify-center space-x-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold py-3 px-4 rounded-xl transition border border-gray-700 text-sm">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span>With Watermark</span>
+                                </a>
+                            </div>
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
                 } else {
-                    alert('ভিডিও পাওয়া যায়নি। দয়া করে সঠিক লিংক দিন।');
+                    alert('ভিডিও পাওয়া যায়নি। দয়া করে সঠিক লিংক প্রদান করুন।');
                 }
             } catch (error) {
                 console.error(error);
-                alert('কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                alert('সার্ভার থেকে ডেটা আনতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
             } finally {
-                btn.innerText = 'ডাউনলোড করুন';
+                loader.classList.add('hidden');
                 btn.disabled = false;
-            }
-        }
-
-        // ব্রাউজারে ফাইল ডাউনলোড ফোর্চ করার ফাংশন
-        async function triggerDownload(fileUrl, filename) {
-            try {
-                // ভিডিও ফাইলে ফেচ করে ব্লব (Blob) ডাটা তৈরি করা, যাতে সরাসরি ফোনে ডাউনলোড শুরু হয়
-                const response = await fetch(fileUrl);
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = blobUrl;
-                a.download = filename;
-                
-                document.body.appendChild(a);
-                a.click();
-                
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
-            } catch (err) {
-                // কোনো কারণে ব্লক করলে সরাসরি লিংকে রিডাইরেক্ট করবে
-                window.open(fileUrl, '_blank');
             }
         }
     </script>
