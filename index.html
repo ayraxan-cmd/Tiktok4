@@ -1,99 +1,94 @@
 <!DOCTYPE html>
-<html lang="bn" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikSnap Pro - Ultimate TikTok Video Downloader</title>
-    <!-- Tailwind CSS CDN -->
+    <title>TikTok Video Downloader - SSSTik Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#0b0f19',
-                        cardBg: '#111827',
-                        accentRed: '#ff3b5c',
-                        accentHover: '#e03250'
+                        ssstkDark: '#121629',
+                        ssstkPurple: '#6324c6',
+                        ssstkBtn: '#38bdf8',
+                        ssstkBtnHover: '#0ea5e9'
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-darkBg text-white min-h-screen flex flex-col justify-between font-sans selection:bg-accentRed selection:text-white">
+<body class="bg-[#4a0e85] bg-gradient-to-b from-[#6912c4] via-[#4a0e85] to-[#121629] text-white min-h-screen flex flex-col justify-between font-sans">
 
-    <!-- Header / Navbar -->
-    <header class="py-5 px-6 border-b border-gray-800/60 backdrop-blur-md bg-darkBg/80 sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="bg-gradient-to-tr from-accentRed to-orange-500 p-2.5 rounded-xl shadow-lg shadow-accentRed/30">
-                    <i class="fa-solid fa-video text-white text-lg"></i>
-                </div>
-                <span class="text-xl font-black tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">TikSnap<span class="text-accentRed">.Pro</span></span>
+    <!-- Header -->
+    <header class="py-4 px-6 flex justify-between items-center max-w-xl mx-auto w-full">
+        <div class="flex items-center space-x-2">
+            <div class="bg-white p-2 rounded-xl text-purple-700 shadow-md">
+                <i class="fa-solid fa-download text-lg"></i>
             </div>
-            <span class="text-xs bg-accentRed/10 text-accentRed border border-accentRed/20 px-3 py-1 rounded-full font-semibold">SSSTik Style</span>
+            <span class="text-xl font-black tracking-wider">SSSTIK</span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-md flex items-center space-x-1">
+                <i class="fa-solid fa-mobile-screen"></i>
+                <span>Install App</span>
+            </button>
+            <button class="text-white text-xl focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow flex items-center justify-center px-4 py-12">
-        <div class="w-full max-w-xl">
-            <!-- Hero Section -->
-            <div class="text-center mb-8">
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">টিকটক ভিডিও ডাউনলোড করুন</h1>
-                <p class="text-gray-400 text-sm sm:text-base">ওয়াটারমার্ক ছাড়া এইচডি এবং এমপিথ্রি (MP3) ডাউনলোড করুন এক ক্লিকে।</p>
-            </div>
+    <!-- Main Section -->
+    <main class="flex-grow flex flex-col items-center px-4 pt-6 pb-12 max-w-xl mx-auto w-full">
+        <h1 class="text-3xl sm:text-4xl font-black text-center mb-6 tracking-wide">TikTok Video Downloader</h1>
 
-            <!-- Input Card -->
-            <div class="bg-cardBg border border-gray-800 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/50 backdrop-blur-xl">
-                <div class="space-y-4">
-                    <label for="url" class="block text-sm font-medium text-gray-300">টিকটক ভিডিওর লিংক পেস্ট করুন:</label>
-                    <div class="relative flex items-center">
-                        <span class="absolute left-4 text-gray-500">
-                            <i class="fa-solid fa-link"></i>
-                        </span>
-                        <input type="text" id="url" placeholder="https://v.tiktok.com/... অথবা ভিডিওর লিংক" 
-                            class="w-full pl-11 pr-28 py-4 bg-gray-900/80 border border-gray-700/80 rounded-2xl focus:outline-none focus:border-accentRed focus:ring-2 focus:ring-accentRed/20 text-white placeholder-gray-500 text-sm transition-all">
-                        
-                        <!-- Paste Button Inside Input -->
-                        <button onclick="pasteLink()" type="button" 
-                            class="absolute right-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 border border-gray-700">
-                            <i class="fa-solid fa-paste"></i>
-                            <span>পেস্ট</span>
-                        </button>
-                    </div>
-
-                    <button onclick="downloadVideo()" id="downloadBtn"
-                        class="w-full bg-gradient-to-r from-accentRed to-rose-600 hover:from-accentHover hover:to-rose-700 text-white font-bold py-4 rounded-2xl transition duration-300 shadow-lg shadow-accentRed/30 flex items-center justify-center space-x-2 text-base active:scale-[0.99]">
-                        <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
-                        <span>ডাউনলোড অপশন দেখুন</span>
-                    </button>
-                </div>
-
-                <!-- Loading State -->
-                <div id="loader" class="hidden mt-8 text-center space-y-3">
-                    <div class="inline-block w-8 h-8 border-4 border-accentRed border-t-transparent rounded-full animate-spin"></div>
-                    <p class="text-sm text-gray-400">প্রসেস করা হচ্ছে, দয়া করে অপেক্ষা করুন...</p>
-                </div>
-
-                <!-- Result Section (SSSTik Style Multiple Options) -->
-                <div id="result" class="mt-8 hidden space-y-4 animate-fade-in">
-                    <!-- JavaScript দিয়ে এখানে অপশনগুলো আসবে -->
-                </div>
-            </div>
+        <!-- Input Box -->
+        <div class="w-full bg-white rounded-2xl p-2 shadow-2xl flex items-center relative mb-4">
+            <input type="text" id="url" placeholder="Insert a link here" 
+                class="w-full py-3 pl-4 pr-24 text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none text-base">
+            <button onclick="pasteLink()" type="button" 
+                class="absolute right-3 bg-purple-100 hover:bg-purple-200 text-purple-700 px-3.5 py-2 rounded-xl text-sm font-bold transition flex items-center space-x-1 shadow-sm">
+                <i class="fa-regular fa-paste"></i>
+                <span>Paste</span>
+            </button>
         </div>
+
+        <!-- Download Button -->
+        <button onclick="downloadVideo()" id="downloadBtn"
+            class="w-full bg-[#a855f7] hover:bg-[#9333ea] border border-purple-400/30 text-white font-extrabold py-4 rounded-2xl transition duration-200 shadow-xl text-lg tracking-wide uppercase">
+            Download
+        </button>
+
+        <!-- Loader -->
+        <div id="loader" class="hidden mt-6 text-center space-y-2">
+            <div class="inline-block w-7 h-7 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-xs text-purple-200">Processing video...</p>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result" class="w-full mt-6 hidden space-y-4"></div>
     </main>
 
     <!-- Footer -->
-    <footer class="py-6 text-center border-t border-gray-800/60 text-gray-500 text-xs">
-        &copy; 2026 TikSnap Pro. All rights reserved.
+    <footer class="py-8 px-4 text-center text-purple-300/80 text-xs border-t border-purple-900/40 bg-[#0d101d] space-y-3">
+        <div class="flex flex-wrap justify-center gap-4 text-sm font-medium text-purple-200">
+            <a href="#" class="hover:underline">Contacts</a>
+            <a href="#" class="hover:underline">TikTok Viewer</a>
+            <a href="#" class="hover:underline">Twitter video downloader</a>
+            <a href="#" class="hover:underline">Instagram Downloader</a>
+        </div>
+        <p class="text-gray-400 text-[11px]">We are not affiliated with TikTok, Douyin or Bytedance.</p>
+        <div class="pt-2 border-t border-gray-800 text-gray-300 font-semibold text-xs">
+            Made by Hasan | WhatsApp: <a href="https://wa.me/8801636214939" target="_blank" class="text-green-400 underline">+8801636214939</a>
+        </div>
+        <p class="text-gray-500 text-[10px]">&copy; 2018-2026 SSSTik. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript -->
     <script>
         async function pasteLink() {
             try {
@@ -101,10 +96,10 @@
                 if (text) {
                     document.getElementById('url').value = text;
                 } else {
-                    alert('ক্লিপবোর্ড খালি!');
+                    alert('Clipboard is empty!');
                 }
             } catch (err) {
-                alert('ব্রাউজার থেকে ক্লিপবোর্ড এক্সেস অনুমতি দেওয়া নেই।');
+                alert('Please paste manually.');
             }
         }
 
@@ -115,7 +110,7 @@
             const btn = document.getElementById('downloadBtn');
 
             if (!urlInput) {
-                alert('দয়া করে প্রথমে একটি টিকটক লিংক দিন।');
+                alert('Please insert a valid link.');
                 return;
             }
 
@@ -128,65 +123,57 @@
                 const data = await response.json();
 
                 if (data.code === 0) {
-                    const videoNoWm = data.data.play;     // ওয়াটারমার্ক ছাড়া ভিডিও লিংক
-                    const videoHd = data.data.hdplay || videoNoWm; // এইচডি ভিডিও লিংক
-                    const musicUrl = data.data.music;     // এমপিথ্রি অডিও লিংক
-                    const coverUrl = data.data.cover;     
+                    const videoNoWm = data.data.play;
+                    const videoHd = data.data.hdplay || videoNoWm;
+                    const musicUrl = data.data.music;
+                    const coverUrl = data.data.cover;
                     const title = data.data.title || 'TikTok Video';
                     const author = data.data.author?.nickname || 'Creator';
 
                     resultDiv.innerHTML = `
-                        <div class="border border-gray-800 rounded-2xl p-5 bg-gray-900/90 shadow-inner flex flex-col space-y-4">
-                            <div class="flex items-center space-x-4">
-                                <img src="${coverUrl}" alt="Thumbnail" class="w-20 h-20 object-cover rounded-xl border border-gray-700 shadow">
+                        <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <img src="${coverUrl}" alt="Cover" class="w-16 h-16 object-cover rounded-xl border border-purple-500/40">
                                 <div class="overflow-hidden">
                                     <h3 class="text-sm font-bold text-white truncate">${author}</h3>
-                                    <p class="text-xs text-gray-400 line-clamp-2 mt-1">${title}</p>
+                                    <p class="text-xs text-gray-400 line-clamp-2 mt-0.5">${title}</p>
                                 </div>
                             </div>
 
-                            <!-- SSSTik Style Action Buttons -->
-                            <div class="flex flex-col space-y-2.5 pt-2">
-                                <!-- Without Watermark HD -->
+                            <div class="flex flex-col space-y-2.5">
                                 <button onclick="triggerDownload('${videoHd}', 'tiktok_hd_${Date.now()}.mp4')"
-                                    class="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md text-sm">
-                                    <i class="fa-solid fa-video"></i>
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-md">
                                     <span>Without watermark HD</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">AD</span>
                                 </button>
 
-                                <!-- Without Watermark Standard -->
                                 <button onclick="triggerDownload('${videoNoWm}', 'tiktok_${Date.now()}.mp4')"
-                                    class="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md text-sm">
-                                    <i class="fa-solid fa-download"></i>
-                                    <span>Without watermark</span>
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm shadow-md">
+                                    Without watermark
                                 </button>
 
-                                <!-- Download MP3 -->
                                 <button onclick="triggerDownload('${musicUrl}', 'tiktok_audio_${Date.now()}.mp3')"
-                                    class="w-full flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-4 rounded-xl transition shadow-md text-sm">
-                                    <i class="fa-solid fa-music"></i>
-                                    <span>Download MP3</span>
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm shadow-md">
+                                    Download MP3
                                 </button>
                             </div>
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
                 } else {
-                    alert('ভিডিও পাওয়া যায়নি। সঠিক লিংক দিন।');
+                    alert('Video not found. Please check the link.');
                 }
             } catch (error) {
                 console.error(error);
-                alert('সার্ভার থেকে ডেটা আনতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                alert('Something went wrong. Try again.');
             } finally {
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
         }
 
-        // সরাসরি ফোন বা ডিভাইসে ফাইল ডাউনলোড ট্রিগার করার উন্নত ফাংশন
         async function triggerDownload(fileUrl, filename) {
             try {
-                // ব্লব (Blob) তৈরি করে সরাসরি ডাউনলোড ফোরস করা যাতে ডুয়েল পেজ ওপেন না হয়
                 const response = await fetch(fileUrl);
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
@@ -202,7 +189,6 @@
                 window.URL.revokeObjectURL(blobUrl);
                 document.body.removeChild(a);
             } catch (err) {
-                // কোনো কারণে ফেইল করলে সরাসরি ডাউনলোড লিংকে পাঠাবে
                 const a = document.createElement('a');
                 a.href = fileUrl;
                 a.download = filename;
