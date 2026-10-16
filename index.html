@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Video Downloader - No Watermark</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="py-6 text-center">
+        <h1 class="text-3xl font-bold text-red-500">TikTok Downloader</h1>
+        <p class="text-gray-400 text-sm mt-1">ওয়াটারমার্ক ছাড়া টিকটক ভিডিও ডাউনলোড করুন একদম ফ্রিতে!</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center px-4">
+        <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-lg">
+            <div class="space-y-4">
+                <div>
+                    <label for="url" class="block text-sm font-medium text-gray-300 mb-2">টিকটক ভিডিওর লিংক দিন:</label>
+                    <input type="text" id="url" placeholder="https://www.tiktok.com/@username/video/..." 
+                        class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:border-red-500 text-white placeholder-gray-400">
+                </div>
+                <button onclick="downloadVideo()" id="downloadBtn"
+                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition duration-200">
+                    ডাউনলোড করুন
+                </button>
+            </div>
+
+            <!-- Result Section -->
+            <div id="result" class="mt-6 hidden">
+                <!-- JavaScript দিয়ে এখানে ডাউনলোড লিংক বা ভিডিও প্রিভিউ আসবে -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-4 text-center text-gray-500 text-sm">
+        &copy; 2026 TikTok Downloader. All rights reserved.
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        async function downloadVideo() {
+            const urlInput = document.getElementById('url').value.trim();
+            const resultDiv = document.getElementById('result');
+            const btn = document.getElementById('downloadBtn');
+
+            if (!urlInput) {
+                alert('দয়া করে একটি সঠিক টিকটক লিংক দিন।');
+                return;
+            }
+
+            btn.innerText = 'লোড হচ্ছে...';
+            btn.disabled = true;
+            resultDiv.classList.add('hidden');
+
+            try {
+                // আমরা এখানে একটি ফ্রি থার্ড-পার্টি API ব্যবহার করতে পারি (যেমন RapidAPI বা TikWM API)
+                // উদাহরণস্বরূপ TikWM ফ্রি API ব্যবহার করা হলো:
+                const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
+                const data = await response.json();
+
+                if (data.code === 0) {
+                    const videoUrl = data.data.play; // ওয়াটারমার্ক ছাড়া ভিডিও লিংক
+                    const coverUrl = data.data.cover; // থাম্বনেইল
+
+                    resultDiv.innerHTML = `
+                        <div class="border border-gray-700 rounded-lg p-4 bg-gray-700/50 flex flex-col items-center space-y-4">
+                            <img src="${coverUrl}" alt="Thumbnail" class="w-32 h-32 object-cover rounded-md">
+                            <a href="${videoUrl}" target="_blank" download="tiktok_video.mp4"
+                                class="w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition">
+                                সার্ভার থেকে ডাউনলোড করুন (No Watermark)
+                            </a>
+                        </div>
+                    `;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    alert('ভিডিও পাওয়া যায়নি। দয়া করে সঠিক লিংক দিন।');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+            } finally {
+                btn.innerText = 'ডাউনলোড করুন';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
