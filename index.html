@@ -58,12 +58,10 @@
         <!-- Result Section -->
         <div id="result" class="w-full mt-6 hidden space-y-4"></div>
 
-        <!-- Permanent Below Apps Grid (Always shows the other 3 platforms) -->
+        <!-- Permanent Below Apps Grid (Always shows other platforms) -->
         <div class="w-full mt-10 space-y-3">
             <h3 class="text-xs uppercase tracking-widest text-purple-300 font-bold px-1">Other Supported Platforms</h3>
-            <div id="bottomAppsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <!-- Dynamically filled with non-active platforms -->
-            </div>
+            <div id="bottomAppsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
         </div>
     </main>
 
@@ -97,7 +95,7 @@
         <div class="pt-2 border-t border-gray-800 text-gray-300 font-semibold text-xs">
             Made by Hasan | WhatsApp: <a href="https://wa.me/8801636214939" target="_blank" class="text-green-400 underline">+8801636214939</a>
         </div>
-        <p class="text-gray-500 text-[10px]">&copy; 2018-2026 SSSTik. All rights reserved.</p>
+        <p class="text-gray-500 text-[10px]">&copy; 2018-2026 All-in-One. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript -->
@@ -106,9 +104,9 @@
 
         const platforms = [
             { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok text-pink-500', placeholder: 'Insert TikTok link here' },
-            { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube text-red-500', placeholder: 'Insert YouTube link here' },
-            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here' },
-            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here' }
+            { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube text-red-500', placeholder: 'Insert YouTube link here (Long or Shorts)' },
+            { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here (Video or Reel)' },
+            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here (Reel or Post)' }
         ];
 
         function renderBottomApps() {
@@ -249,19 +247,39 @@
                         alert('Video not found. Please check the link.');
                     }
                 } else {
-                    const apiRes = await fetch(`https://api.cobalt.tools/api/json`, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ url: urlInput })
-                    });
-                    const resData = await apiRes.json();
+                    // Multi-instance fallback for YouTube, Facebook, and Instagram (Long & Shorts)
+                    let downloadUrl = '';
+                    const instances = [
+                        'https://api.cobalt.tools/api/json',
+                        'https://nuko-c.meowing.de/api/json',
+                        'https://bergung-api.hoffnungfuerdiezukunft.net/api/json'
+                    ];
 
-                    if (resData.status === 'stream' || resData.status === 'redirect' || resData.url) {
-                        const downloadUrl = resData.url || resData.picker[0].url;
-                        
+                    let success = false;
+                    for (const apiEndpoint of instances) {
+                        try {
+                            const apiRes = await fetch(apiEndpoint, {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ url: urlInput })
+                            });
+                            const resData = await apiRes.json();
+                            if (resData && (resData.url || resData.picker)) {
+                                downloadUrl = resData.url || (resData.picker && resData.picker[0] && resData.picker[0].url);
+                                if (downloadUrl) {
+                                    success = true;
+                                    break;
+                                }
+                            }
+                        } catch (e) {
+                            continue;
+                        }
+                    }
+
+                    if (success && downloadUrl) {
                         safeDownload(downloadUrl, `${currentPlatform}_video_${Date.now()}.mp4`);
 
                         resultDiv.innerHTML = `
@@ -281,7 +299,7 @@
                         `;
                         resultDiv.classList.remove('hidden');
                     } else {
-                        alert('Could not fetch media. Please check the link.');
+                        alert('Could not process this link. Please check if the video is public.');
                     }
                 }
 
@@ -323,7 +341,6 @@
             }
         }
 
-        // Initial render on page load
         renderBottomApps();
     </script>
 </body>
