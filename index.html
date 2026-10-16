@@ -52,14 +52,14 @@
         <!-- Loader -->
         <div id="loader" class="hidden mt-6 text-center space-y-2">
             <div class="inline-block w-7 h-7 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-xs text-purple-200">Processing video...</p>
+            <p class="text-xs text-purple-200">Processing media...</p>
         </div>
 
-        <!-- Result Section (Direct Serial Quality Options) -->
+        <!-- Result Section -->
         <div id="result" class="w-full mt-6 hidden space-y-4"></div>
     </main>
 
-    <!-- Popup Modal (Dynamic platform exclusion) -->
+    <!-- Popup Modal -->
     <div id="popupModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
         <div class="bg-[#1a1f35] rounded-t-3xl p-6 border-t border-purple-500/30 max-w-xl mx-auto w-full space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-3">
@@ -69,9 +69,7 @@
                 </button>
             </div>
             
-            <div id="popupList" class="space-y-2">
-                <!-- Dynamically populated without current platform -->
-            </div>
+            <div id="popupList" class="space-y-2"></div>
 
             <button onclick="closePopup()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-3 rounded-xl transition text-center text-sm">
                 Close
@@ -99,14 +97,14 @@
         let currentPlatform = 'tiktok';
 
         const platforms = [
-            { id: 'tiktok', name: 'TikTok Video Downloader', icon: 'fa-brands fa-tiktok text-pink-500' },
-            { id: 'youtube', name: 'YouTube Video Downloader', icon: 'fa-brands fa-youtube text-red-500' },
-            { id: 'facebook', name: 'Facebook Video Downloader', icon: 'fa-brands fa-facebook text-blue-500' },
-            { id: 'instagram', name: 'Instagram Downloader', icon: 'fa-brands fa-instagram text-pink-400' }
+            { id: 'tiktok', name: 'TikTok Video Downloader', icon: 'fa-brands fa-tiktok text-pink-500', placeholder: 'Insert TikTok link here' },
+            { id: 'youtube', name: 'YouTube Video Downloader', icon: 'fa-brands fa-youtube text-red-500', placeholder: 'Insert YouTube link here' },
+            { id: 'facebook', name: 'Facebook Video Downloader', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here' },
+            { id: 'instagram', name: 'Instagram Downloader', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here' }
         ];
 
-        function switchPlatform(platform) {
-            currentPlatform = platform;
+        function switchPlatform(platformId) {
+            currentPlatform = platformId;
             const titleEl = document.getElementById('mainTitle');
             const urlInput = document.getElementById('url');
             const resultDiv = document.getElementById('result');
@@ -114,9 +112,9 @@
             resultDiv.classList.add('hidden');
             urlInput.value = '';
 
-            const pObj = platforms.find(p => p.id === platform);
+            const pObj = platforms.find(p => p.id === platformId);
             titleEl.innerText = pObj.name;
-            urlInput.placeholder = `Insert ${platform.charAt(0).toUpperCase() + platform.slice(1)} link here`;
+            urlInput.placeholder = pObj.placeholder;
             closePopup();
         }
 
@@ -186,10 +184,8 @@
                         const title = data.data.title || 'TikTok Video';
                         const author = data.data.author?.nickname || 'Creator';
 
-                        // Automatically trigger download for HD (Without Watermark HD) immediately on button click
-                        triggerDownload(videoHd, `tiktok_hd_${Date.now()}.mp4`);
+                        safeDownload(videoHd, `tiktok_hd_${Date.now()}.mp4`);
 
-                        // Render serial quality options directly below
                         resultDiv.innerHTML = `
                             <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-4">
                                 <div class="flex items-center space-x-3">
@@ -201,19 +197,19 @@
                                 </div>
 
                                 <div class="flex flex-col space-y-2.5">
-                                    <button onclick="triggerDownload('${videoHd}', 'tiktok_hd_${Date.now()}.mp4')"
+                                    <button onclick="safeDownload('${videoHd}', 'tiktok_hd_${Date.now()}.mp4')"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Without watermark HD</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
                                     </button>
 
-                                    <button onclick="triggerDownload('${videoNoWm}', 'tiktok_${Date.now()}.mp4')"
+                                    <button onclick="safeDownload('${videoNoWm}', 'tiktok_${Date.now()}.mp4')"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Without watermark</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Normal</span>
                                     </button>
 
-                                    <button onclick="triggerDownload('${musicUrl}', 'tiktok_audio_${Date.now()}.mp3')"
+                                    <button onclick="safeDownload('${musicUrl}', 'tiktok_audio_${Date.now()}.mp3')"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Download MP3</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Audio</span>
@@ -226,42 +222,58 @@
                         alert('Video not found. Please check the link.');
                     }
                 } else {
-                    // Generic handler for other platforms with instant auto-download & serial options
-                    triggerDownload(urlInput, `${currentPlatform}_video_${Date.now()}.mp4`);
+                    // Universal API Proxy for YouTube, Facebook & Instagram to extract streams safely
+                    const apiRes = await fetch(`https://api.cobalt.tools/api/json`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ url: urlInput })
+                    });
+                    const resData = await apiRes.json();
 
-                    resultDiv.innerHTML = `
-                        <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
-                            <p class="text-sm font-bold text-gray-200">${currentPlatform.toUpperCase()} Video Options</p>
-                            <button onclick="triggerDownload('${urlInput}', '${currentPlatform}_hd_${Date.now()}.mp4')"
-                                class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                <span>Download HD Quality</span>
-                                <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
-                            </button>
-                            <button onclick="triggerDownload('${urlInput}', '${currentPlatform}_audio_${Date.now()}.mp3')"
-                                class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                <span>Download Audio (MP3)</span>
-                                <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP3</span>
-                            </button>
-                        </div>
-                    `;
-                    resultDiv.classList.remove('hidden');
+                    if (resData.status === 'stream' || resData.status === 'redirect' || resData.url) {
+                        const downloadUrl = resData.url || resData.picker[0].url;
+                        
+                        safeDownload(downloadUrl, `${currentPlatform}_video_${Date.now()}.mp4`);
+
+                        resultDiv.innerHTML = `
+                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
+                                <p class="text-sm font-bold text-gray-200 capitalize">${currentPlatform} Video Ready</p>
+                                <button onclick="safeDownload('${downloadUrl}', '${currentPlatform}_hd_${Date.now()}.mp4')"
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                    <span>Download HD Quality</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
+                                </button>
+                                <button onclick="safeDownload('${downloadUrl}', '${currentPlatform}_audio_${Date.now()}.mp3')"
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                    <span>Download Audio (MP3)</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP3</span>
+                                </button>
+                            </div>
+                        `;
+                        resultDiv.classList.remove('hidden');
+                    } else {
+                        alert('Could not fetch media. Please check the link.');
+                    }
                 }
 
-                // Show popup immediately after download action with current platform excluded
+                // Show popup immediately after processing with current platform excluded
                 setTimeout(() => {
                     showPopupExcludingCurrent();
                 }, 800);
 
             } catch (error) {
                 console.error(error);
-                alert('Something went wrong. Try again.');
+                alert('Network error or invalid link. Please try again.');
             } finally {
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
         }
 
-        async function triggerDownload(fileUrl, filename) {
+        async function safeDownload(fileUrl, filename) {
             try {
                 const response = await fetch(fileUrl);
                 const blob = await response.blob();
