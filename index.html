@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEBA-All-in-One Video Downloader</title>
+    <title>Jeba All-in-One Video Downloader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -16,7 +15,7 @@
             <div class="bg-white p-2 rounded-xl text-purple-700 shadow-md">
                 <i class="fa-solid fa-download text-lg"></i>
             </div>
-            <span class="text-xl font-black tracking-wider">ALL-IN-ONE</span>
+            <span class="text-xl font-black tracking-wider">JEBA AIO</span>
         </div>
         <div class="flex items-center space-x-3">
             <button class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-md flex items-center space-x-1">
@@ -96,7 +95,7 @@
         <div class="pt-2 border-t border-gray-800 text-gray-300 font-semibold text-xs">
             Made by Hasan | WhatsApp: <a href="https://wa.me/8801636214939" target="_blank" class="text-green-400 underline">+8801636214939</a>
         </div>
-        <p class="text-gray-500 text-[10px]">&copy; 2018-2026 All-in-One. All rights reserved.</p>
+        <p class="text-gray-500 text-[10px]">&copy; 2018-2026 Jeba All-in-One Downloader. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript -->
@@ -221,23 +220,23 @@
                                 </div>
 
                                 <div class="flex flex-col space-y-2.5">
-                                    <button onclick="triggerDownload('${videoHd}', 'tiktok_hd_${Date.now()}.mp4')"
+                                    <a href="${videoHd}" target="_blank" download="jeba_tiktok_hd.mp4"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Without watermark HD</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
-                                    </button>
+                                    </a>
 
-                                    <button onclick="triggerDownload('${videoNoWm}', 'tiktok_${Date.now()}.mp4')"
+                                    <a href="${videoNoWm}" target="_blank" download="jeba_tiktok.mp4"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Without watermark</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Normal</span>
-                                    </button>
+                                    </a>
 
-                                    <button onclick="triggerDownload('${musicUrl}', 'tiktok_audio_${Date.now()}.mp3')"
+                                    <a href="${musicUrl}" target="_blank" download="jeba_tiktok_audio.mp3"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Download MP3</span>
                                         <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Audio</span>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         `;
@@ -246,22 +245,22 @@
                         alert('Video not found. Please check the link.');
                     }
                 } else {
-                    // Safe Direct Stream Handler for YouTube, Facebook & Instagram (Long & Shorts)
+                    // Clean and direct options for YouTube, Facebook & Instagram without ads/redirects
                     resultDiv.innerHTML = `
                         <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
                             <p class="text-sm font-bold text-gray-200 capitalize">${currentPlatform} Video Options</p>
                             
-                            <button onclick="triggerSafeStream('${urlInput}', 'hd')"
+                            <a href="${urlInput}" target="_blank" download="jeba_${currentPlatform}_video.mp4"
                                 class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                <span>Download HD Quality</span>
+                                <span>Download Video File</span>
                                 <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
-                            </button>
+                            </a>
 
-                            <button onclick="triggerSafeStream('${urlInput}', 'audio')"
+                            <a href="${urlInput}" target="_blank" download="jeba_${currentPlatform}_audio.mp3"
                                 class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                 <span>Download Audio (MP3)</span>
                                 <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP3</span>
-                            </button>
+                            </a>
                         </div>
                     `;
                     resultDiv.classList.remove('hidden');
@@ -278,32 +277,6 @@
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
-        }
-
-        function triggerDownload(fileUrl, filename) {
-            const a = document.createElement('a');
-            a.href = fileUrl;
-            a.download = filename;
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function triggerSafeStream(videoUrl, type) {
-            // Safe internal proxy stream builder to prevent app redirection
-            const encodedUrl = encodeURIComponent(videoUrl);
-            const proxyTarget = `https://co.wuk.sh/api/json`;
-            
-            // Fallback direct safe download handler
-            const targetDownloadUrl = `https://loader.to/api/button/?url=${encodedUrl}&f=${type === 'audio' ? 'mp3' : '720'}`;
-            
-            const a = document.createElement('a');
-            a.href = targetDownloadUrl;
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
 
         renderBottomApps();
