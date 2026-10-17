@@ -105,6 +105,20 @@
 
     <!-- JavaScript -->
     <script>
+        // Disable Right Click & View Source Shortcuts
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function(event) {
+            if (
+                event.keyCode == 123 || 
+                (event.ctrlKey && event.shiftKey && (event.keyCode == 73 || event.keyCode == 74)) || 
+                (event.ctrlKey && event.keyCode == 85) || 
+                (event.ctrlKey && event.keyCode == 83)    
+            ) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
         let currentPlatform = 'tiktok';
 
         const platforms = [
