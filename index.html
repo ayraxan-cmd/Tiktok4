@@ -61,7 +61,7 @@
         <!-- Result Section -->
         <div id="result" class="w-full mt-6 hidden space-y-4"></div>
 
-        <!-- Permanent Below Apps Grid (Always shows the other 3 platforms) -->
+        <!-- Permanent Below Apps Grid -->
         <div class="w-full mt-10 space-y-3">
             <h3 class="text-xs uppercase tracking-widest text-purple-300 font-bold px-1">Other Supported Platforms</h3>
             <div id="bottomAppsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -94,7 +94,7 @@
             <a href="#" class="hover:underline">Contacts</a>
             <a href="#" class="hover:underline">TikTok Viewer</a>
             <a href="#" class="hover:underline">Twitter video downloader</a>
-            <a href="#" class="hover:underline">Instagram Downloader</a>
+            <a href="#" class="hover:underline">Facebook Downloader</a>
         </div>
         <p class="text-gray-400 text-[11px]">We are not affiliated with social platforms.</p>
         <div class="pt-2 border-t border-gray-800 text-gray-300 font-semibold text-xs">
@@ -123,10 +123,12 @@
 
         const platforms = [
             { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok text-pink-500', placeholder: 'Insert TikTok link here' },
-            { id: 'youtube', name: 'YouTube', icon: 'fa-brands fa-youtube text-red-500', placeholder: 'Insert YouTube link here' },
             { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here' },
-            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here' }
+            { id: 'pinterest', name: 'Pinterest', icon: 'fa-brands fa-pinterest text-red-500', placeholder: 'Insert Pinterest link here' },
+            { id: 'snapchat', name: 'Snapchat', icon: 'fa-brands fa-snapchat text-yellow-400', placeholder: 'Insert Snapchat link here' }
         ];
+
+        const API_BASE_URL = 'https://social-download-two.vercel.app';
 
         function renderBottomApps() {
             const grid = document.getElementById('bottomAppsGrid');
@@ -228,8 +230,6 @@
                         const title = data.data.title || 'TikTok Video';
                         const author = data.data.author?.nickname || 'Creator';
 
-                        safeDownload(videoHd, `hasan_tiktok_hd_${Date.now()}.mp4`);
-
                         resultDiv.innerHTML = `
                             <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-4">
                                 <div class="flex items-center space-x-3">
@@ -265,40 +265,95 @@
                     } else {
                         alert('Video not found. Please check the link.');
                     }
-                } else {
-                    const apiRes = await fetch(`https://api.cobalt.tools/api/json`, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ url: urlInput })
-                    });
-                    const resData = await apiRes.json();
+                } 
+                else if (currentPlatform === 'facebook') {
+                    const res = await fetch(`${API_BASE_URL}/facebook?video=${encodeURIComponent(urlInput)}`);
+                    const data = await res.json();
 
-                    if (resData.status === 'stream' || resData.status === 'redirect' || resData.url) {
-                        const downloadUrl = resData.url || resData.picker[0].url;
-                        
-                        safeDownload(downloadUrl, `hasan_${currentPlatform}_video_${Date.now()}.mp4`);
+                    if (data.status === 'success') {
+                        const hdLink = data.video.hd;
+                        const sdLink = data.video.sd;
+                        const title = data.video.title || 'Facebook Video';
+                        const thumb = data.video.thumbnail || '';
 
                         resultDiv.innerHTML = `
+                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    ${thumb ? `<img src="${thumb}" alt="Thumb" class="w-16 h-16 object-cover rounded-xl border border-purple-500/40">` : ''}
+                                    <div class="overflow-hidden">
+                                        <h3 class="text-sm font-bold text-white truncate">${title}</h3>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col space-y-2.5">
+                                    ${hd !== 'Not available' ? `
+                                    <button onclick="safeDownload('${hdLink}', 'hasan_fb_hd_${Date.now()}.mp4')"
+                                        class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                        <span>Download HD Quality</span>
+                                        <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
+                                    </button>` : ''}
+                                    ${sd !== 'Not available' ? `
+                                    <button onclick="safeDownload('${sdLink}', 'hasan_fb_sd_${Date.now()}.mp4')"
+                                        class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                        <span>Download SD Quality</span>
+                                        <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">SD</span>
+                                    </button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                        resultDiv.classList.remove('hidden');
+                    } else {
+                        alert('Could not fetch Facebook video.');
+                    }
+                }
+                else if (currentPlatform === 'pinterest') {
+                    const res = await fetch(`${API_BASE_URL}/Pinterest?video=${encodeURIComponent(urlInput)}`);
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        const mediaUrl = data.video || data.photo;
+                        resultDiv.innerHTML = `
                             <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
-                                <p class="text-sm font-bold text-gray-200 capitalize">${currentPlatform} Video Ready</p>
-                                <button onclick="safeDownload('${downloadUrl}', 'hasan_${currentPlatform}_hd_${Date.now()}.mp4')"
+                                <p class="text-sm font-bold text-gray-200">Pinterest Media Ready</p>
+                                <button onclick="safeDownload('${mediaUrl}', 'hasan_pinterest_${Date.now()}.${data.video ? 'mp4' : 'jpg'}')"
                                     class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                    <span>Download HD Quality</span>
-                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span>
-                                </button>
-                                <button onclick="safeDownload('${downloadUrl}', 'hasan_${currentPlatform}_audio_${Date.now()}.mp3')"
-                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                    <span>Download Audio (MP3)</span>
-                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP3</span>
+                                    <span>Download Media</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Original</span>
                                 </button>
                             </div>
                         `;
                         resultDiv.classList.remove('hidden');
                     } else {
-                        alert('Could not fetch media. Please check the link.');
+                        alert('Could not fetch Pinterest media.');
+                    }
+                }
+                else if (currentPlatform === 'snapchat') {
+                    const res = await fetch(`${API_BASE_URL}/snap?video=${encodeURIComponent(urlInput)}`);
+                    const data = await res.json();
+
+                    if (data.status === 'success') {
+                        const videoUrl = data.video;
+                        const imageUrl = data.image;
+
+                        resultDiv.innerHTML = `
+                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
+                                <p class="text-sm font-bold text-gray-200">Snapchat Media Ready</p>
+                                ${videoUrl ? `
+                                <button onclick="safeDownload('${videoUrl}', 'hasan_snap_video_${Date.now()}.mp4')"
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                    <span>Download Video</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP4</span>
+                                </button>` : ''}
+                                ${imageUrl ? `
+                                <button onclick="safeDownload('${imageUrl}', 'hasan_snap_image_${Date.now()}.jpg')"
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                    <span>Download Image</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">JPG</span>
+                                </button>` : ''}
+                            </div>
+                        `;
+                        resultDiv.classList.remove('hidden');
+                    } else {
+                        alert('Could not fetch Snapchat media.');
                     }
                 }
 
