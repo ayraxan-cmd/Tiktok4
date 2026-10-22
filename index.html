@@ -94,7 +94,7 @@
             <a href="#" class="hover:underline">Contacts</a>
             <a href="#" class="hover:underline">TikTok Viewer</a>
             <a href="#" class="hover:underline">Twitter video downloader</a>
-            <a href="#" class="hover:underline">Facebook Downloader</a>
+            <a href="#" class="hover:underline">Instagram Downloader</a>
         </div>
         <p class="text-gray-400 text-[11px]">We are not affiliated with social platforms.</p>
         <div class="pt-2 border-t border-gray-800 text-gray-300 font-semibold text-xs">
@@ -124,6 +124,7 @@
         const platforms = [
             { id: 'tiktok', name: 'TikTok', icon: 'fa-brands fa-tiktok text-pink-500', placeholder: 'Insert TikTok link here' },
             { id: 'facebook', name: 'Facebook', icon: 'fa-brands fa-facebook text-blue-500', placeholder: 'Insert Facebook link here' },
+            { id: 'instagram', name: 'Instagram', icon: 'fa-brands fa-instagram text-pink-400', placeholder: 'Insert Instagram link here' },
             { id: 'pinterest', name: 'Pinterest', icon: 'fa-brands fa-pinterest text-red-500', placeholder: 'Insert Pinterest link here' },
             { id: 'snapchat', name: 'Snapchat', icon: 'fa-brands fa-snapchat text-yellow-400', placeholder: 'Insert Snapchat link here' }
         ];
@@ -290,6 +291,29 @@
                         alert('Could not fetch Facebook video. Check the link.');
                     }
                 }
+                else if (currentPlatform === 'instagram') {
+                    const response = await fetch(`${API_BASE_URL}/Instagram?video=${encodeURIComponent(urlInput)}`);
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        const mediaUrl = data.video || data.photo;
+                        const isVideo = !!data.video;
+
+                        resultDiv.innerHTML = `
+                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
+                                <p class="text-sm font-bold text-gray-200">Instagram Media Ready</p>
+                                <button onclick="safeDownload('${mediaUrl}', 'hasan_instagram_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}')"
+                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
+                                    <span>Download ${isVideo ? 'Video' : 'Image'}</span>
+                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">${isVideo ? 'HD' : 'JPG'}</span>
+                                </button>
+                            </div>
+                        `;
+                        resultDiv.classList.remove('hidden');
+                    } else {
+                        alert('Could not fetch Instagram media. Check the link.');
+                    }
+                }
                 else if (currentPlatform === 'pinterest') {
                     const response = await fetch(`${API_BASE_URL}/Pinterest?video=${encodeURIComponent(urlInput)}`);
                     const data = await response.json();
@@ -322,7 +346,7 @@
                         const imageUrl = data.image;
 
                         resultDiv.innerHTML = `
-                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
+                            <div class="bg-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3 bg-gray-900">
                                 <p class="text-sm font-bold text-gray-200">Snapchat Media Ready</p>
                                 ${videoUrl ? `<button onclick="safeDownload('${videoUrl}', 'hasan_snap_video_${Date.now()}.mp4')" class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md"><span>Download Video</span><span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP4</span></button>` : ''}
                                 ${imageUrl ? `<button onclick="safeDownload('${imageUrl}', 'hasan_snap_image_${Date.now()}.jpg')" class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md"><span>Download Image</span><span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">JPG</span></button>` : ''}
