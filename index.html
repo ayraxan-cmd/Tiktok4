@@ -241,6 +241,16 @@
                                         <p class="text-xs text-gray-400 line-clamp-2 mt-0.5">${title}</p>
                                     </div>
                                 </div>
+                                <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs font-bold text-purple-300">Caption & Hashtags</span>
+                                        <button onclick="copyCaption(this)" data-caption="${encodeURIComponent(title)}" class="bg-purple-600 hover:bg-purple-700 text-white text-xs px-2.5 py-1 rounded-lg transition flex items-center space-x-1">
+                                            <i class="fa-regular fa-copy"></i>
+                                            <span>Copy</span>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-300 line-clamp-3">${title}</p>
+                                </div>
                                 <div class="flex flex-col space-y-2.5">
                                     <button onclick="safeDownload('${videoHd}', 'hasan_tiktok_hd_${Date.now()}.mp4')"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
@@ -255,149 +265,4 @@
                                     <button onclick="safeDownload('${musicUrl}', 'hasan_tiktok_audio_${Date.now()}.mp3')"
                                         class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
                                         <span>Download MP3</span>
-                                        <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">Audio</span>
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        resultDiv.classList.remove('hidden');
-                    } else {
-                        alert('Video not found. Please check the link.');
-                    }
-                } 
-                else if (currentPlatform === 'facebook') {
-                    const response = await fetch(`${API_BASE_URL}/facebook?video=${encodeURIComponent(urlInput)}`);
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        const hdUrl = data.video && data.video.hd !== 'Not available' ? data.video.hd : null;
-                        const sdUrl = data.video && data.video.sd !== 'Not available' ? data.video.sd : null;
-                        const title = data.video && data.video.title ? data.video.title : 'Facebook Video';
-
-                        resultDiv.innerHTML = `
-                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-4">
-                                <div class="overflow-hidden">
-                                    <h3 class="text-sm font-bold text-white truncate">${title}</h3>
-                                </div>
-                                <div class="flex flex-col space-y-2.5">
-                                    ${hdUrl ? `<button onclick="safeDownload('${hdUrl}', 'hasan_fb_hd_${Date.now()}.mp4')" class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md"><span>Download HD Quality</span><span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">HD</span></button>` : ''}
-                                    ${sdUrl ? `<button onclick="safeDownload('${sdUrl}', 'hasan_fb_sd_${Date.now()}.mp4')" class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md"><span>Download SD Quality</span><span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">SD</span></button>` : ''}
-                                    ${!hdUrl && !sdUrl ? `<p class="text-xs text-red-400 text-center">No download links found.</p>` : ''}
-                                </div>
-                            </div>
-                        `;
-                        resultDiv.classList.remove('hidden');
-                    } else {
-                        alert('Could not fetch Facebook video. Check the link.');
-                    }
-                }
-                else if (currentPlatform === 'instagram') {
-                    const response = await fetch(`${API_BASE_URL}/Instagram?video=${encodeURIComponent(urlInput)}`);
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        const mediaUrl = data.video || data.photo;
-                        const isVideo = !!data.video;
-
-                        resultDiv.innerHTML = `
-                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
-                                <p class="text-sm font-bold text-gray-200">Instagram Media Ready</p>
-                                <button onclick="safeDownload('${mediaUrl}', 'hasan_instagram_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}')"
-                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                    <span>Download ${isVideo ? 'Video' : 'Image'}</span>
-                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">${isVideo ? 'HD' : 'JPG'}</span>
-                                </button>
-                            </div>
-                        `;
-                        resultDiv.classList.remove('hidden');
-                    } else {
-                        alert('Could not fetch Instagram media. Check the link.');
-                    }
-                }
-                else if (currentPlatform === 'pinterest') {
-                    const response = await fetch(`${API_BASE_URL}/Pinterest?video=${encodeURIComponent(urlInput)}`);
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        const mediaUrl = data.video || data.photo;
-                        const isVideo = !!data.video;
-
-                        resultDiv.innerHTML = `
-                            <div class="bg-gray-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3">
-                                <p class="text-sm font-bold text-gray-200">Pinterest Media Ready</p>
-                                <button onclick="safeDownload('${mediaUrl}', 'hasan_pinterest_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}')"
-                                    class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md">
-                                    <span>Download ${isVideo ? 'Video' : 'Image'}</span>
-                                    <span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">${isVideo ? 'HD' : 'JPG'}</span>
-                                </button>
-                            </div>
-                        `;
-                        resultDiv.classList.remove('hidden');
-                    } else {
-                        alert('Could not fetch Pinterest media. Check the link.');
-                    }
-                }
-                else if (currentPlatform === 'snapchat') {
-                    const response = await fetch(`${API_BASE_URL}/snap?video=${encodeURIComponent(urlInput)}`);
-                    const data = await response.json();
-
-                    if (data.status === 'success') {
-                        const videoUrl = data.video;
-                        const imageUrl = data.image;
-
-                        resultDiv.innerHTML = `
-                            <div class="bg-900 border border-purple-500/30 rounded-2xl p-4 shadow-2xl flex flex-col space-y-3 bg-gray-900">
-                                <p class="text-sm font-bold text-gray-200">Snapchat Media Ready</p>
-                                ${videoUrl ? `<button onclick="safeDownload('${videoUrl}', 'hasan_snap_video_${Date.now()}.mp4')" class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md"><span>Download Video</span><span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">MP4</span></button>` : ''}
-                                ${imageUrl ? `<button onclick="safeDownload('${imageUrl}', 'hasan_snap_image_${Date.now()}.jpg')" class="w-full bg-[#38bdf8] hover:bg-[#0ea5e9] text-gray-900 font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-between shadow-md"><span>Download Image</span><span class="bg-gray-900/20 px-2 py-0.5 rounded text-[10px]">JPG</span></button>` : ''}
-                            </div>
-                        `;
-                        resultDiv.classList.remove('hidden');
-                    } else {
-                        alert('Could not fetch Snapchat media. Check the link.');
-                    }
-                }
-
-                setTimeout(() => {
-                    showPopupExcludingCurrent();
-                }, 800);
-
-            } catch (error) {
-                console.error(error);
-                alert('Network error or invalid link. Please try again.');
-            } finally {
-                loader.classList.add('hidden');
-                btn.disabled = false;
-            }
-        }
-
-        async function safeDownload(fileUrl, filename) {
-            try {
-                const response = await fetch(fileUrl);
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = blobUrl;
-                a.download = filename;
-                
-                document.body.appendChild(a);
-                a.click();
-                
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
-            } catch (err) {
-                const a = document.createElement('a');
-                a.href = fileUrl;
-                a.download = filename;
-                a.target = '_blank';
-                a.click();
-            }
-        }
-
-        // Initial render on page load
-        renderBottomApps();
-    </script>
-</body>
-</html>
+                                        <span class="bg-gray-900/20 px-2 py
